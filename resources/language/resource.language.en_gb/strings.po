@@ -1,0 +1,134 @@
+# Kodi Media Center language file
+# Addon Name: MovieDB
+# Addon id: plugin.video.moviedb
+# Addon Provider: prabhuzz00
+msgid ""
+msgstr ""
+
+msgctxt "#30000"
+msgid "General"
+msgstr ""
+
+msgctxt "#30001"
+msgid "TMDB API Key (leave blank to use default)"
+msgstr ""
+
+msgctxt "#30002"
+msgid "Language Code (e.g. en-US)"
+msgstr ""
+
+msgctxt "#30003"
+msgid "Results per page"
+msgstr ""
+
+msgctxt "#30010"
+msgid "Playback"
+msgstr ""
+
+msgctxt "#30011"
+msgid "Enable Trailers"
+msgstr ""
+
+msgctxt "#30012"
+msgid "Play Quality Hint"
+msgstr ""
+
+msgctxt "#30100"
+msgid "Movies"
+msgstr ""
+
+msgctxt "#30101"
+msgid "TV Series"
+msgstr ""
+
+msgctxt "#30102"
+msgid "Search"
+msgstr ""
+
+msgctxt "#30110"
+msgid "Popular Movies"
+msgstr ""
+
+msgctxt "#30111"
+msgid "Top Rated Movies"
+msgstr ""
+
+msgctxt "#30112"
+msgid "Now Playing"
+msgstr ""
+
+msgctxt "#30113"
+msgid "Upcoming Movies"
+msgstr ""
+
+msgctxt "#30120"
+msgid "Popular TV Series"
+msgstr ""
+
+msgctxt "#30121"
+msgid "Top Rated TV Series"
+msgstr ""
+
+msgctxt "#30122"
+msgid "On The Air"
+msgstr ""
+
+msgctxt "#30123"
+msgid "Airing Today"
+msgstr ""
+
+msgctxt "#30200"
+msgid "Play Movie"
+msgstr ""
+
+msgctxt "#30201"
+msgid "Watch Trailer"
+msgstr ""
+
+msgctxt "#30202"
+msgid "Cast"
+msgstr ""
+
+msgctxt "#30203"
+msgid "Season"
+msgstr ""
+
+msgctxt "#30204"
+msgid "Episode"
+msgstr ""
+
+msgctxt "#30205"
+msgid "Next Page"
+msgstr ""
+
+msgctxt "#30206"
+msgid "Search Movies & TV"
+msgstr ""
+
+msgctxt "#30207"
+msgid "Enter search term..."
+msgstr ""
+
+msgctxt "#30300"
+msgid "API Key Required"
+msgstr ""
+
+msgctxt "#30301"
+msgid "Please enter your TMDB API key in the addon settings."
+msgstr ""
+
+msgctxt "#30302"
+msgid "No Results Found"
+msgstr ""
+
+msgctxt "#30303"
+msgid "Could not reach TMDB. Check your internet connection."
+msgstr ""
+
+msgctxt "#30304"
+msgid "No IMDB ID available for this title - cannot play."
+msgstr ""
+
+msgctxt "#30305"
+msgid "No trailer available."
+msgstr ""
