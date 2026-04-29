@@ -634,7 +634,7 @@ def action_search(params):
 # ---------------------------------------------------------------------------
 
 def action_play_movie(params):
-    """Resolve the VidSrc URL and hand it to Kodi's player."""
+    """Resolve the VSEmbed URL and hand it to Kodi's player."""
     imdb_id = params.get("imdb_id", "")
     title = params.get("title", "")
 
@@ -642,7 +642,7 @@ def action_play_movie(params):
         xbmcgui.Dialog().ok(ADDON_NAME, _s("no_imdb"))
         return
 
-    stream_url = tmdb_api.build_vidsrc_movie_url(imdb_id)
+    stream_url = tmdb_api.build_vsembed_movie_url(imdb_id)
     xbmc.log("[MovieDB] Playing movie: {url}".format(url=stream_url),
              xbmc.LOGINFO)
 
@@ -654,7 +654,7 @@ def action_play_movie(params):
 
 
 def action_play_tv(params):
-    """Resolve the VidSrc URL for a TV episode and play it."""
+    """Resolve the VSEmbed URL for a TV episode and play it."""
     imdb_id = params.get("imdb_id", "")
     title = params.get("title", "")
     season = params.get("season", "1")
@@ -664,7 +664,7 @@ def action_play_tv(params):
         xbmcgui.Dialog().ok(ADDON_NAME, _s("no_imdb"))
         return
 
-    stream_url = tmdb_api.build_vidsrc_tv_url(imdb_id, season, episode)
+    stream_url = tmdb_api.build_vsembed_tv_url(imdb_id, season, episode)
     xbmc.log("[MovieDB] Playing TV episode: {url}".format(url=stream_url),
              xbmc.LOGINFO)
 

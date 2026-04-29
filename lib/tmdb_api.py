@@ -265,3 +265,22 @@ def build_vidsrc_tv_url(imdb_id, season, episode):
         "https://vidsrc.to/embed/tv/{imdb}/{s}/{e}".format(
             imdb=imdb_id, s=season, e=episode)
     )
+
+
+def build_vsembed_movie_url(imdb_id):
+    """Return the VSEmbed URL for a movie.
+
+    Format: https://vsembed.ru/embed/movie/<imdb_id>
+    """
+    return "https://vsembed.ru/embed/movie/{imdb}".format(imdb=imdb_id)
+
+
+def build_vsembed_tv_url(imdb_id, season, episode):
+    """Return the VSEmbed URL for a TV episode.
+
+    Format: https://vsembed.ru/embed/tv?imdb=<imdb_id>&season=<s>&episode=<e>
+    """
+    return (
+        "https://vsembed.ru/embed/tv?imdb={imdb}&season={s}&episode={e}".format(
+            imdb=imdb_id, s=season, e=episode)
+    )
