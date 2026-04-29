@@ -89,6 +89,7 @@ S = {
     "network_error":   30303,
     "no_imdb":         30304,
     "no_trailer":      30305,
+    "stream_error":    30306,
 }
 
 
@@ -667,18 +668,24 @@ def action_search(params):
 # ---------------------------------------------------------------------------
 
 def action_play_movie(params):
-    """Resolve the VSEmbed URL and hand it to Kodi's player."""
+    """Resolve the stream URL and hand it to Kodi's player."""
     imdb_id = params.get("imdb_id", "")
     title = params.get("title", "")
 
     if not imdb_id:
         xbmcgui.Dialog().ok(ADDON_NAME, _s("no_imdb"))
+        xbmcplugin.setResolvedUrl(PLUGIN_HANDLE, False, listitem=xbmcgui.ListItem())
         return
 
-    embed_url = tmdb_api.build_vsembed_movie_url(imdb_id)
-    stream_url, mime_type = tmdb_api.resolve_stream_url(embed_url)
+    stream_url, mime_type = tmdb_api.resolve_movie_stream(imdb_id)
     xbmc.log("[MovieDB] Playing movie: {url}".format(url=stream_url),
              xbmc.LOGINFO)
+
+    if not stream_url:
+        xbmcgui.Dialog().notification(ADDON_NAME, _s("stream_error"),
+                                      xbmcgui.NOTIFICATION_ERROR)
+        xbmcplugin.setResolvedUrl(PLUGIN_HANDLE, False, listitem=xbmcgui.ListItem())
+        return
 
     li = xbmcgui.ListItem(label=title, path=stream_url)
     li.setProperty("IsPlayable", "true")
@@ -692,7 +699,7 @@ def action_play_movie(params):
 
 
 def action_play_tv(params):
-    """Resolve the VSEmbed URL for a TV episode and play it."""
+    """Resolve the stream URL for a TV episode and play it."""
     imdb_id = params.get("imdb_id", "")
     title = params.get("title", "")
     season = params.get("season", "1")
@@ -700,12 +707,18 @@ def action_play_tv(params):
 
     if not imdb_id:
         xbmcgui.Dialog().ok(ADDON_NAME, _s("no_imdb"))
+        xbmcplugin.setResolvedUrl(PLUGIN_HANDLE, False, listitem=xbmcgui.ListItem())
         return
 
-    embed_url = tmdb_api.build_vsembed_tv_url(imdb_id, season, episode)
-    stream_url, mime_type = tmdb_api.resolve_stream_url(embed_url)
+    stream_url, mime_type = tmdb_api.resolve_tv_stream(imdb_id, season, episode)
     xbmc.log("[MovieDB] Playing TV episode: {url}".format(url=stream_url),
              xbmc.LOGINFO)
+
+    if not stream_url:
+        xbmcgui.Dialog().notification(ADDON_NAME, _s("stream_error"),
+                                      xbmcgui.NOTIFICATION_ERROR)
+        xbmcplugin.setResolvedUrl(PLUGIN_HANDLE, False, listitem=xbmcgui.ListItem())
+        return
 
     li = xbmcgui.ListItem(label=title, path=stream_url)
     li.setProperty("IsPlayable", "true")
