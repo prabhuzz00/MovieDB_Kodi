@@ -171,50 +171,51 @@ def _language():
 # List-item helpers
 # ---------------------------------------------------------------------------
 
-def _set_video_info(li, info_dict, media_type="movie"):
-    """Populate a ListItem's video info-tag."""
+def _set_video_info(li, info):
+    """Set video metadata on a ListItem.
+
+    On Kodi 20+ (Nexus) uses the ``InfoTagVideo`` setter methods to avoid
+    the "Use the respective setter in InfoTagVideo" log warnings.  Falls back
+    to the legacy ``setInfo("video", …)`` API on older Kodi versions.
+
+    Args:
+        li (xbmcgui.ListItem): The list item to update.
+        info (dict): Flat info dict using the same keys as ``setInfo``:
+            title, plot, year, rating, votes, genre (comma-separated string),
+            mediatype, tvshowtitle, season, episode, aired.
+    """
     tag = li.getVideoInfoTag() if hasattr(li, "getVideoInfoTag") else None
     if tag:
-        # Kodi 20+ (Nexus) info-tag API
-        if media_type == "movie":
-            tag.setTitle(info_dict.get("title", ""))
-            tag.setPlot(info_dict.get("overview", ""))
-            tag.setYear(int(str(info_dict.get("release_date", "0000"))[:4] or 0))
-            tag.setRating(float(info_dict.get("vote_average", 0)))
-            tag.setVotes(info_dict.get("vote_count", 0))
-            tag.setGenres([g["name"] for g in info_dict.get("genres", [])])
-            tag.setMediaType("movie")
-        else:
-            tag.setTitle(info_dict.get("name", ""))
-            tag.setPlot(info_dict.get("overview", ""))
-            tag.setYear(int(str(info_dict.get("first_air_date", "0000"))[:4] or 0))
-            tag.setRating(float(info_dict.get("vote_average", 0)))
-            tag.setVotes(info_dict.get("vote_count", 0))
-            tag.setGenres([g["name"] for g in info_dict.get("genres", [])])
-            tag.setMediaType("tvshow")
+        # Kodi 20+ (Nexus) — use dedicated setter methods
+        if info.get("title"):
+            tag.setTitle(info["title"])
+        if info.get("plot"):
+            tag.setPlot(info["plot"])
+        if info.get("year"):
+            tag.setYear(int(info["year"]))
+        if "rating" in info:
+            tag.setRating(float(info["rating"]))
+        if "votes" in info:
+            try:
+                tag.setVotes(int(str(info["votes"]).replace(",", "")))
+            except (ValueError, TypeError):
+                pass
+        if info.get("genre"):
+            genres = [g.strip() for g in info["genre"].split(",") if g.strip()]
+            tag.setGenres(genres)
+        if info.get("mediatype"):
+            tag.setMediaType(info["mediatype"])
+        if info.get("tvshowtitle"):
+            tag.setTvShowTitle(info["tvshowtitle"])
+        if "season" in info:
+            tag.setSeason(int(info["season"]))
+        if "episode" in info:
+            tag.setEpisode(int(info["episode"]))
+        if info.get("aired"):
+            tag.setFirstAired(info["aired"])
     else:
-        # Older Kodi setInfo API
-        if media_type == "movie":
-            li.setInfo("video", {
-                "title": info_dict.get("title", ""),
-                "plot": info_dict.get("overview", ""),
-                "year": int(str(info_dict.get("release_date", "0000"))[:4] or 0),
-                "rating": float(info_dict.get("vote_average", 0)),
-                "votes": str(info_dict.get("vote_count", "")),
-                "genre": ", ".join(g["name"] for g in info_dict.get("genres", [])),
-                "mediatype": "movie",
-            })
-        else:
-            li.setInfo("video", {
-                "title": info_dict.get("name", ""),
-                "tvshowtitle": info_dict.get("name", ""),
-                "plot": info_dict.get("overview", ""),
-                "year": int(str(info_dict.get("first_air_date", "0000"))[:4] or 0),
-                "rating": float(info_dict.get("vote_average", 0)),
-                "votes": str(info_dict.get("vote_count", "")),
-                "genre": ", ".join(g["name"] for g in info_dict.get("genres", [])),
-                "mediatype": "tvshow",
-            })
+        # Older Kodi — legacy API
+        li.setInfo("video", info)
 
 
 def _make_list_item(title, thumbnail="", fanart="", is_folder=True):
@@ -319,7 +320,7 @@ def action_list_movies(params):
 
         li = _make_list_item(label, thumbnail=poster, fanart=fanart,
                              is_folder=True)
-        li.setInfo("video", {
+        _set_video_info(li, {
             "title": title,
             "year": int(year) if year else 0,
             "rating": float(rating),
@@ -373,7 +374,7 @@ def action_list_tv(params):
 
         li = _make_list_item(label, thumbnail=poster, fanart=fanart,
                              is_folder=True)
-        li.setInfo("video", {
+        _set_video_info(li, {
             "title": title,
             "tvshowtitle": title,
             "year": int(year) if year else 0,
@@ -431,7 +432,7 @@ def action_movie_details(params):
             "[B][COLOR lime]{p}[/COLOR][/B]".format(p=_s("play_movie")),
             thumbnail=poster, fanart=fanart, is_folder=False,
         )
-        play_li.setInfo("video", {
+        _set_video_info(play_li, {
             "title": title,
             "plot": overview,
             "year": int(year) if year else 0,
@@ -516,7 +517,7 @@ def action_tv_seasons(params):
 
         s_li = _make_list_item(label, thumbnail=s_poster, fanart=fanart,
                                is_folder=True)
-        s_li.setInfo("video", {
+        _set_video_info(s_li, {
             "title": s_name,
             "tvshowtitle": title,
             "mediatype": "season",
@@ -561,7 +562,7 @@ def action_tv_episodes(params):
         label = "{s}x{e:02d}  {n}".format(s=season, e=ep_number, n=ep_name)
 
         ep_li = _make_list_item(label, thumbnail=ep_thumb, is_folder=False)
-        ep_li.setInfo("video", {
+        _set_video_info(ep_li, {
             "title": ep_name,
             "tvshowtitle": show_name,
             "season": season,
@@ -640,7 +641,7 @@ def action_search(params):
 
         li = _make_list_item(label, thumbnail=poster, fanart=fanart,
                              is_folder=True)
-        li.setInfo("video", {
+        _set_video_info(li, {
             "title": title,
             "plot": item.get("overview", ""),
             "rating": float(item.get("vote_average", 0)),
