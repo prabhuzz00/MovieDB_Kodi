@@ -2,7 +2,7 @@
 <settings>
     <category label="30000">
         <!-- TMDB API key — get a free key at https://www.themoviedb.org/settings/api -->
-        <setting id="tmdb_api_key"  type="text"    label="30001" default=""/>
+        <setting id="tmdb_api_key"  type="text"    label="30001" default="e1acdbad0316a49bd53412b31fcd0701"/>
         <setting id="tmdb_lang"     type="text"    label="30002" default="en-US"/>
         <setting id="results_per_page" type="slider" label="30003" default="20"
                  range="5,5,40" option="int"/>
