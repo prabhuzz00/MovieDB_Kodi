@@ -642,13 +642,15 @@ def action_play_movie(params):
         xbmcgui.Dialog().ok(ADDON_NAME, _s("no_imdb"))
         return
 
-    stream_url = tmdb_api.build_vsembed_movie_url(imdb_id)
+    embed_url = tmdb_api.build_vsembed_movie_url(imdb_id)
+    stream_url, mime_type = tmdb_api.resolve_stream_url(embed_url)
     xbmc.log("[MovieDB] Playing movie: {url}".format(url=stream_url),
              xbmc.LOGINFO)
 
     li = xbmcgui.ListItem(label=title, path=stream_url)
     li.setProperty("IsPlayable", "true")
-    li.setMimeType("text/html")
+    if mime_type:
+        li.setMimeType(mime_type)
     li.setContentLookup(False)
     xbmcplugin.setResolvedUrl(PLUGIN_HANDLE, True, listitem=li)
 
@@ -664,13 +666,15 @@ def action_play_tv(params):
         xbmcgui.Dialog().ok(ADDON_NAME, _s("no_imdb"))
         return
 
-    stream_url = tmdb_api.build_vsembed_tv_url(imdb_id, season, episode)
+    embed_url = tmdb_api.build_vsembed_tv_url(imdb_id, season, episode)
+    stream_url, mime_type = tmdb_api.resolve_stream_url(embed_url)
     xbmc.log("[MovieDB] Playing TV episode: {url}".format(url=stream_url),
              xbmc.LOGINFO)
 
     li = xbmcgui.ListItem(label=title, path=stream_url)
     li.setProperty("IsPlayable", "true")
-    li.setMimeType("text/html")
+    if mime_type:
+        li.setMimeType(mime_type)
     li.setContentLookup(False)
     xbmcplugin.setResolvedUrl(PLUGIN_HANDLE, True, listitem=li)
 

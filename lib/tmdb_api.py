@@ -16,6 +16,7 @@ TMDB API reference: https://developers.themoviedb.org/3
 """
 
 import json
+import re
 import sys
 
 if sys.version_info[0] >= 3:
@@ -284,3 +285,81 @@ def build_vsembed_tv_url(imdb_id, season, episode):
         "https://vsembed.ru/embed/tv?imdb={imdb}&season={s}&episode={e}".format(
             imdb=imdb_id, s=season, e=episode)
     )
+
+
+# ---------------------------------------------------------------------------
+# Stream URL resolver
+# ---------------------------------------------------------------------------
+
+# Ordered list of regex patterns used to find direct video stream URLs inside
+# embed page HTML / inline JavaScript.  Each pattern must capture the raw URL
+# in group 1.
+_STREAM_PATTERNS = [
+    # JW Player / Video.js  "file": "https://…/video.m3u8"
+    re.compile(r'"file"\s*:\s*"(https?://[^"]+\.m3u8[^"]*)"'),
+    # Generic  src="https://…/video.m3u8"  (double-quoted)
+    re.compile(r'src="(https?://[^"]+\.m3u8[^"]*)"'),
+    # Generic  src='https://…/video.m3u8'  (single-quoted)
+    re.compile(r"src='(https?://[^']+\.m3u8[^']*)'"),
+    # Generic  "url": "https://…/video.m3u8"
+    re.compile(r'"url"\s*:\s*"(https?://[^"]+\.m3u8[^"]*)"'),
+    # JW Player  "file": "https://…/video.mp4"
+    re.compile(r'"file"\s*:\s*"(https?://[^"]+\.mp4[^"]*)"'),
+    # Generic  src="https://…/video.mp4"  (double-quoted)
+    re.compile(r'src="(https?://[^"]+\.mp4[^"]*)"'),
+    # Generic  src='https://…/video.mp4'  (single-quoted)
+    re.compile(r"src='(https?://[^']+\.mp4[^']*)'"),
+    # Generic  "url": "https://…/video.mp4"
+    re.compile(r'"url"\s*:\s*"(https?://[^"]+\.mp4[^"]*)"'),
+]
+
+# Browser-like headers to improve chances of getting a full HTML response
+_BROWSER_HEADERS = {
+    "User-Agent": (
+        "Mozilla/5.0 (Windows NT 10.0; Win64; x64) "
+        "AppleWebKit/537.36 (KHTML, like Gecko) "
+        "Chrome/120.0.0.0 Safari/537.36"
+    ),
+    "Accept": (
+        "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8"
+    ),
+    "Accept-Language": "en-US,en;q=0.5",
+    "Referer": "https://www.google.com/",
+}
+
+
+def resolve_stream_url(embed_url, timeout=_DEFAULT_TIMEOUT):
+    """Attempt to extract a direct video stream URL from an embed page.
+
+    Many video services serve an HTML embed page whose JavaScript dynamically
+    loads the actual video.  This function fetches the embed page and searches
+    its HTML/JavaScript source for direct stream URLs (HLS .m3u8 or .mp4).
+
+    Args:
+        embed_url (str): The embed page URL (e.g. from ``build_vsembed_*``).
+        timeout (int):   Connection timeout in seconds.
+
+    Returns:
+        tuple(str, str):
+            ``(stream_url, mime_type)`` where *stream_url* is the direct
+            stream URL (or *embed_url* when none is found) and *mime_type* is
+            a suitable MIME-type string (``"application/x-mpegURL"`` for HLS,
+            ``"video/mp4"`` for MP4, ``""`` as fallback).
+    """
+    try:
+        req = Request(embed_url, headers=_BROWSER_HEADERS)
+        response = urlopen(req, timeout=timeout)
+        html = response.read().decode("utf-8", errors="replace")
+
+        for pattern in _STREAM_PATTERNS:
+            match = pattern.search(html)
+            if match:
+                url = match.group(1)
+                if ".m3u8" in url:
+                    return url, "application/x-mpegURL"
+                return url, "video/mp4"
+
+    except (URLError, OSError):
+        pass
+
+    return embed_url, ""
