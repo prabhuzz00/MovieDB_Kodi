@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<strings>
+    <!-- Categories -->
+    <string id="30000">General</string>
+    <string id="30001">TMDB API Key</string>
+    <string id="30002">Language Code (e.g. en-US)</string>
+    <string id="30003">Results per page</string>
+
+    <!-- Playback settings -->
+    <string id="30010">Playback</string>
+    <string id="30011">Enable Trailers</string>
+    <string id="30012">Play Quality Hint</string>
+
+    <!-- Main menu -->
+    <string id="30100">Movies</string>
+    <string id="30101">TV Series</string>
+    <string id="30102">Search</string>
+
+    <!-- Movies sub-menu -->
+    <string id="30110">Popular Movies</string>
+    <string id="30111">Top Rated Movies</string>
+    <string id="30112">Now Playing</string>
+    <string id="30113">Upcoming Movies</string>
+
+    <!-- TV sub-menu -->
+    <string id="30120">Popular TV Series</string>
+    <string id="30121">Top Rated TV Series</string>
+    <string id="30122">On The Air</string>
+    <string id="30123">Airing Today</string>
+
+    <!-- Actions / labels -->
+    <string id="30200">Play Movie</string>
+    <string id="30201">Watch Trailer</string>
+    <string id="30202">Cast</string>
+    <string id="30203">Season</string>
+    <string id="30204">Episode</string>
+    <string id="30205">Next Page →</string>
+    <string id="30206">Search Movies &amp; TV</string>
+    <string id="30207">Enter search term…</string>
+
+    <!-- Errors / notices -->
+    <string id="30300">API Key Required</string>
+    <string id="30301">Please enter your TMDB API key in the addon settings.</string>
+    <string id="30302">No Results Found</string>
+    <string id="30303">Could not reach TMDB. Check your internet connection.</string>
+    <string id="30304">No IMDB ID available for this title — cannot play.</string>
+    <string id="30305">No trailer available.</string>
+</strings>

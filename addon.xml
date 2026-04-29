@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<addon id="plugin.video.moviedb"
+       name="MovieDB"
+       version="1.0.0"
+       provider-name="prabhuzz00">
+
+    <requires>
+        <import addon="xbmc.python" version="3.0.0"/>
+    </requires>
+
+    <!-- Plugin source -->
+    <extension point="xbmc.python.pluginsource" library="default.py">
+        <provides>video</provides>
+    </extension>
+
+    <!-- Addon metadata -->
+    <extension point="xbmc.addon.metadata">
+        <summary lang="en_GB">Browse Movies and TV Series via TMDB</summary>
+        <description lang="en_GB">
+            Browse popular, top-rated, now-playing and upcoming Movies and TV Series.
+            View full details — poster, backdrop, synopsis, cast and trailers — all
+            pulled from The Movie Database (TMDB). Play movies and TV episodes
+            instantly via the embedded VidSrc player.
+        </description>
+        <disclaimer lang="en_GB">
+            This addon uses the TMDB API (tmdb.org) for metadata and VidSrc
+            (vidsrcme.ru) for streaming. You need a free TMDB API key.
+            Use at your own risk and in accordance with local laws.
+        </disclaimer>
+        <platform>all</platform>
+        <license>GPL v2.0</license>
+        <forum/>
+        <website>https://github.com/prabhuzz00/MovieDB_Kodi</website>
+        <source>https://github.com/prabhuzz00/MovieDB_Kodi</source>
+        <news>
+            v1.0.0 – Initial release
+        </news>
+    </extension>
+
+</addon>
