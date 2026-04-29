@@ -6,6 +6,10 @@
 
     <requires>
         <import addon="xbmc.python" version="3.0.0"/>
+        <!-- Required for adaptive (HLS/DASH) stream playback -->
+        <import addon="inputstream.adaptive" version="2.6.0"/>
+        <!-- Optional: used to play YouTube trailers via the YouTube addon -->
+        <import addon="plugin.video.youtube" version="6.8.0" optional="true"/>
     </requires>
 
     <!-- Plugin source -->

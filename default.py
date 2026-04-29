@@ -24,6 +24,7 @@ play_trailer    — Play YouTube trailer  (?url=…)
 """
 
 import os
+import re
 import sys
 
 # ---------------------------------------------------------------------------
@@ -106,6 +107,38 @@ def _s(key):
 # ---------------------------------------------------------------------------
 # URL helpers
 # ---------------------------------------------------------------------------
+
+# Regex to extract an 11-character YouTube video ID from a watch URL.
+_YT_ID_RE = re.compile(r'(?:[?&]v=|youtu\.be/)([a-zA-Z0-9_-]{11})')
+
+
+def _yt_plugin_url(watch_url):
+    """Convert a YouTube watch URL to a plugin://plugin.video.youtube URL.
+
+    Falls back to the original *watch_url* when no video ID can be extracted
+    or when the YouTube addon is not installed.
+
+    Args:
+        watch_url (str): A ``https://www.youtube.com/watch?v=<id>`` URL.
+
+    Returns:
+        str: ``plugin://plugin.video.youtube/play/?video_id=<id>``
+             or the original URL when the YouTube addon is unavailable.
+    """
+    try:
+        xbmcaddon.Addon("plugin.video.youtube")
+        yt_available = True
+    except RuntimeError:
+        yt_available = False
+
+    if yt_available:
+        match = _YT_ID_RE.search(watch_url)
+        if match:
+            return "plugin://plugin.video.youtube/play/?video_id={vid}".format(
+                vid=match.group(1)
+            )
+    return watch_url
+
 
 def _build_url(**kwargs):
     """Build a plugin:// URL with the supplied query-string parameters."""
@@ -651,6 +684,9 @@ def action_play_movie(params):
     li.setProperty("IsPlayable", "true")
     if mime_type:
         li.setMimeType(mime_type)
+    if mime_type == "application/x-mpegURL":
+        li.setProperty("inputstream", "inputstream.adaptive")
+        li.setProperty("inputstream.adaptive.manifest_type", "hls")
     li.setContentLookup(False)
     xbmcplugin.setResolvedUrl(PLUGIN_HANDLE, True, listitem=li)
 
@@ -675,12 +711,15 @@ def action_play_tv(params):
     li.setProperty("IsPlayable", "true")
     if mime_type:
         li.setMimeType(mime_type)
+    if mime_type == "application/x-mpegURL":
+        li.setProperty("inputstream", "inputstream.adaptive")
+        li.setProperty("inputstream.adaptive.manifest_type", "hls")
     li.setContentLookup(False)
     xbmcplugin.setResolvedUrl(PLUGIN_HANDLE, True, listitem=li)
 
 
 def action_play_trailer(params):
-    """Play a YouTube trailer URL via Kodi."""
+    """Play a YouTube trailer via the YouTube addon (or direct URL as fallback)."""
     url = params.get("url", "")
     title = params.get("title", "Trailer")
 
@@ -689,8 +728,9 @@ def action_play_trailer(params):
                                       xbmcgui.NOTIFICATION_INFO)
         return
 
-    xbmc.log("[MovieDB] Playing trailer: {url}".format(url=url), xbmc.LOGINFO)
-    li = xbmcgui.ListItem(label=title, path=url)
+    play_url = _yt_plugin_url(url)
+    xbmc.log("[MovieDB] Playing trailer: {url}".format(url=play_url), xbmc.LOGINFO)
+    li = xbmcgui.ListItem(label=title, path=play_url)
     li.setProperty("IsPlayable", "true")
     xbmcplugin.setResolvedUrl(PLUGIN_HANDLE, True, listitem=li)
 
