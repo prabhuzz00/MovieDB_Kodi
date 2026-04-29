@@ -97,7 +97,8 @@ def _s(key):
     if sid is None:
         return key
     try:
-        return ADDON.getLocalizedString(sid)
+        text = ADDON.getLocalizedString(sid)
+        return text if text else key
     except Exception:
         return key
 

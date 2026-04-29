@@ -1,15 +1,45 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes"?>
-<settings>
-    <category label="30000">
-        <!-- TMDB API key — get a free key at https://www.themoviedb.org/settings/api -->
-        <setting id="tmdb_api_key"  type="text"    label="30001" default="e1acdbad0316a49bd53412b31fcd0701"/>
-        <setting id="tmdb_lang"     type="text"    label="30002" default="en-US"/>
-        <setting id="results_per_page" type="slider" label="30003" default="20"
-                 range="5,5,40" option="int"/>
-    </category>
-    <category label="30010">
-        <setting id="enable_trailers" type="bool" label="30011" default="true"/>
-        <setting id="play_quality"    type="select" label="30012" default="0"
-                 values="Embed|720p hint|1080p hint"/>
-    </category>
+<settings version="3">
+    <section id="general">
+        <category id="general" label="30000">
+            <group id="1">
+                <!-- TMDB API key — get a free key at https://www.themoviedb.org/settings/api -->
+                <setting id="tmdb_api_key" type="string" label="30001">
+                    <default>e1acdbad0316a49bd53412b31fcd0701</default>
+                    <level>0</level>
+                </setting>
+                <setting id="tmdb_lang" type="string" label="30002">
+                    <default>en-US</default>
+                    <level>0</level>
+                </setting>
+                <setting id="results_per_page" type="slider" label="30003">
+                    <default>20</default>
+                    <level>0</level>
+                    <constraints>
+                        <minimum>5</minimum>
+                        <step>5</step>
+                        <maximum>40</maximum>
+                    </constraints>
+                    <format>integer</format>
+                </setting>
+            </group>
+        </category>
+        <category id="playback" label="30010">
+            <group id="2">
+                <setting id="enable_trailers" type="boolean" label="30011">
+                    <default>true</default>
+                    <level>0</level>
+                </setting>
+                <setting id="play_quality" type="select" label="30012">
+                    <default>0</default>
+                    <level>0</level>
+                    <options allowempty="false">
+                        <option label="Embed">0</option>
+                        <option label="720p hint">1</option>
+                        <option label="1080p hint">2</option>
+                    </options>
+                </setting>
+            </group>
+        </category>
+    </section>
 </settings>

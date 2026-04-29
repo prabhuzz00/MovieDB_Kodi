@@ -256,12 +256,12 @@ def extract_imdb_id(details):
 
 def build_vidsrc_movie_url(imdb_id):
     """Return the VidSrc embed URL for a movie."""
-    return "https://vidsrcme.ru/embed/movie?imdb={imdb}".format(imdb=imdb_id)
+    return "https://vidsrc.to/embed/movie/{imdb}".format(imdb=imdb_id)
 
 
 def build_vidsrc_tv_url(imdb_id, season, episode):
     """Return the VidSrc embed URL for a TV episode."""
     return (
-        "https://vidsrcme.ru/embed/tv?imdb={imdb}"
-        "&season={s}&episode={e}".format(imdb=imdb_id, s=season, e=episode)
+        "https://vidsrc.to/embed/tv/{imdb}/{s}/{e}".format(
+            imdb=imdb_id, s=season, e=episode)
     )
