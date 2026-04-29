@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8" standalone="yes"?>
+<settings>
+    <category label="30000">
+        <!-- TMDB API key — get a free key at https://www.themoviedb.org/settings/api -->
+        <setting id="tmdb_api_key"  type="text"    label="30001" default=""/>
+        <setting id="tmdb_lang"     type="text"    label="30002" default="en-US"/>
+        <setting id="results_per_page" type="slider" label="30003" default="20"
+                 range="5,5,40" option="int"/>
+    </category>
+    <category label="30010">
+        <setting id="enable_trailers" type="bool" label="30011" default="true"/>
+        <setting id="play_quality"    type="select" label="30012" default="0"
+                 values="Embed|720p hint|1080p hint"/>
+    </category>
+</settings>
