@@ -50,6 +50,10 @@ import tmdb_api  # noqa: E402  (from lib/)
 # ---------------------------------------------------------------------------
 # Plugin constants
 # ---------------------------------------------------------------------------
+
+# Built-in TMDB API key — users can override this in the addon settings.
+DEFAULT_TMDB_API_KEY = "e1acdbad0316a49bd53412b31fcd0701"
+
 ADDON = xbmcaddon.Addon()
 ADDON_ID = ADDON.getAddonInfo("id")
 ADDON_NAME = ADDON.getAddonInfo("name")
@@ -119,16 +123,9 @@ def _parse_args():
 # ---------------------------------------------------------------------------
 
 def _get_api_key():
-    """Return the TMDB API key; prompt user to set it if missing."""
+    """Return the TMDB API key from settings, falling back to the built-in default."""
     key = ADDON.getSetting("tmdb_api_key").strip()
-    if not key:
-        xbmcgui.Dialog().ok(
-            _s("api_key_title"),
-            _s("api_key_msg"),
-        )
-        ADDON.openSettings()
-        key = ADDON.getSetting("tmdb_api_key").strip()
-    return key
+    return key if key else DEFAULT_TMDB_API_KEY
 
 
 def _language():

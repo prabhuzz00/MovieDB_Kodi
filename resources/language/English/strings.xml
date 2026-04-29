@@ -2,7 +2,7 @@
 <strings>
     <!-- Categories -->
     <string id="30000">General</string>
-    <string id="30001">TMDB API Key</string>
+    <string id="30001">TMDB API Key (leave blank to use default)</string>
     <string id="30002">Language Code (e.g. en-US)</string>
     <string id="30003">Results per page</string>
 
