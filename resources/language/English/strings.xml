@@ -45,4 +45,5 @@
     <string id="30303">Could not reach TMDB. Check your internet connection.</string>
     <string id="30304">No IMDB ID available for this title — cannot play.</string>
     <string id="30305">No trailer available.</string>
+    <string id="30306">No stream found for this title.</string>
 </strings>

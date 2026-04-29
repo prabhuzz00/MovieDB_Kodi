@@ -340,11 +340,11 @@ def resolve_stream_url(embed_url, timeout=_DEFAULT_TIMEOUT):
         timeout (int):   Connection timeout in seconds.
 
     Returns:
-        tuple(str, str):
+        tuple(str | None, str):
             ``(stream_url, mime_type)`` where *stream_url* is the direct
-            stream URL (or *embed_url* when none is found) and *mime_type* is
-            a suitable MIME-type string (``"application/x-mpegURL"`` for HLS,
-            ``"video/mp4"`` for MP4, ``""`` as fallback).
+            stream URL and *mime_type* is a suitable MIME-type string
+            (``"application/x-mpegURL"`` for HLS, ``"video/mp4"`` for MP4).
+            Returns ``(None, "")`` when no direct stream URL is found.
     """
     try:
         req = Request(embed_url, headers=_BROWSER_HEADERS)
@@ -362,4 +362,56 @@ def resolve_stream_url(embed_url, timeout=_DEFAULT_TIMEOUT):
     except (URLError, OSError):
         pass
 
-    return embed_url, ""
+    return None, ""
+
+
+def resolve_movie_stream(imdb_id, timeout=_DEFAULT_TIMEOUT):
+    """Try multiple embed sources and return the first working movie stream URL.
+
+    Sources tried in order: vsembed → vidsrc.
+
+    Args:
+        imdb_id (str): The IMDB ID (e.g. ``'tt0123456'``).
+        timeout (int): Connection timeout in seconds.
+
+    Returns:
+        tuple(str | None, str): ``(stream_url, mime_type)`` where *stream_url*
+        is the resolved direct URL, or ``(None, "")`` when no stream could be
+        found across all sources.
+    """
+    sources = [
+        build_vsembed_movie_url(imdb_id),
+        build_vidsrc_movie_url(imdb_id),
+    ]
+    for embed_url in sources:
+        stream_url, mime_type = resolve_stream_url(embed_url, timeout=timeout)
+        if stream_url:
+            return stream_url, mime_type
+    return None, ""
+
+
+def resolve_tv_stream(imdb_id, season, episode, timeout=_DEFAULT_TIMEOUT):
+    """Try multiple embed sources and return the first working TV episode stream URL.
+
+    Sources tried in order: vsembed → vidsrc.
+
+    Args:
+        imdb_id (str): The IMDB ID of the series.
+        season (int | str): Season number.
+        episode (int | str): Episode number.
+        timeout (int): Connection timeout in seconds.
+
+    Returns:
+        tuple(str | None, str): ``(stream_url, mime_type)`` where *stream_url*
+        is the resolved direct URL, or ``(None, "")`` when no stream could be
+        found across all sources.
+    """
+    sources = [
+        build_vsembed_tv_url(imdb_id, season, episode),
+        build_vidsrc_tv_url(imdb_id, season, episode),
+    ]
+    for embed_url in sources:
+        stream_url, mime_type = resolve_stream_url(embed_url, timeout=timeout)
+        if stream_url:
+            return stream_url, mime_type
+    return None, ""
